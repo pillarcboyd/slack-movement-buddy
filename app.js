@@ -1,18 +1,30 @@
 const { App } = require('@slack/bolt');
 var schedule = require('node-schedule');
+const movements = require('./movements')
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
+var lastMovement = '';
+
 var oncePerMinute = schedule.scheduleJob('45 * * * * *', function(){
+  var currentMovement = '';
+  do {
+    currentMovement = movements.getRandomMovement();
+    console.log('lastMovement = ' + lastMovement);
+    console.log('currentMovement = ' + currentMovement);
+  } while (lastMovement == currentMovement);
+
   app.client.chat.postMessage({
     token: process.env.SLACK_BOT_TOKEN,
     channel: 'CLB865S81',
-    text: 'Get up and do the following: ' + getRandomMovement()
+    text: 'Get up and do the following: ' + currentMovement
   });
-  console.log('Fitness message sent at ' + new Date());
+  console.log(currentMovement + ' fitness message sent at ' + new Date());
+  lastMovement = currentMovement;
+  console.log('new lastMovement is = ' + lastMovement)
 });
 
 var rule = new schedule.RecurrenceRule();
@@ -25,16 +37,10 @@ var oncePerHour = schedule.scheduleJob(rule, function(){
   app.client.chat.postMessage({
     token: process.env.SLACK_BOT_TOKEN,
     channel: 'CLB865S81',
-    text: 'Get up and do the following: ' + getRandomMovement()
+    text: 'Get up and do the following: ' + movements.getRandomMovement()
   });
   console.log('Fitness message sent at ' + new Date());
 });
-
-var movements = ['10 air squats', '10 jumping jacks', '10 pushups', '30 second plank']
-
-function getRandomMovement() {
-  return movements[Math.floor(Math.random() * movements.length)];
-}
 
 app.error((error) => {
   console.error(error);
