@@ -10,12 +10,7 @@ const app = new App({
 var lastMovement = '';
 
 var oncePerMinute = schedule.scheduleJob('45 * * * * *', function(){
-  var currentMovement = '';
-  do {
-    currentMovement = movements.getRandomMovement();
-    console.log('lastMovement = ' + lastMovement);
-    console.log('currentMovement = ' + currentMovement);
-  } while (lastMovement == currentMovement);
+  var currentMovement = getMovement();
 
   app.client.chat.postMessage({
     token: process.env.SLACK_BOT_TOKEN,
@@ -23,8 +18,6 @@ var oncePerMinute = schedule.scheduleJob('45 * * * * *', function(){
     text: 'Get up and do the following: ' + currentMovement
   });
   console.log(currentMovement + ' fitness message sent at ' + new Date());
-  lastMovement = currentMovement;
-  console.log('new lastMovement is = ' + lastMovement)
 });
 
 var rule = new schedule.RecurrenceRule();
@@ -41,6 +34,19 @@ var oncePerHour = schedule.scheduleJob(rule, function(){
   });
   console.log('Fitness message sent at ' + new Date());
 });
+
+function getMovement() {
+  var movement = '';
+  do {
+    movement = movements.getRandomMovement();
+    console.log('lastMovement = ' + lastMovement);
+    console.log('currentMovement = ' + movement);
+  } while (lastMovement == movement);
+
+  lastMovement = movement;
+  console.log('new lastMovement is = ' + lastMovement)
+  return movement;
+}
 
 app.error((error) => {
   console.error(error);
