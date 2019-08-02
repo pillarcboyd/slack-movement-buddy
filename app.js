@@ -7,7 +7,7 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
-var lastMovement = '';
+var lastMovement = [];
 
 var oncePerMinute = schedule.scheduleJob('45 * * * * *', function(){
   var currentMovement = getMovement();
@@ -15,7 +15,7 @@ var oncePerMinute = schedule.scheduleJob('45 * * * * *', function(){
   app.client.chat.postMessage({
     token: process.env.SLACK_BOT_TOKEN,
     channel: 'CLB865S81',
-    text: 'Get up and do the following: ' + currentMovement
+    text: 'Get up and do the following: ' + currentMovement[0] + '. ' + currentMovement[1]
   });
   console.log(currentMovement + ' fitness message sent at ' + new Date());
 });
@@ -27,16 +27,18 @@ rule.minute = 50;
 rule.second = 0;
 
 var oncePerHour = schedule.scheduleJob(rule, function(){
+  var currentMovement = getMovement();
+  
   app.client.chat.postMessage({
     token: process.env.SLACK_BOT_TOKEN,
     channel: 'CLB865S81',
-    text: 'Get up and do the following: ' + movements.getRandomMovement()
+    text: 'Get up and do the following: ' + currentMovement[0] + '. ' + currentMovement[1]
   });
   console.log('Fitness message sent at ' + new Date());
 });
 
 function getMovement() {
-  var movement = '';
+  var movement = [];
   do {
     movement = movements.getRandomMovement();
     console.log('lastMovement = ' + lastMovement);
