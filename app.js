@@ -15,7 +15,7 @@ var oncePerMinute = schedule.scheduleJob('45 * * * * *', function(){
   app.client.chat.postMessage({
     token: process.env.SLACK_BOT_TOKEN,
     channel: 'CLB865S81',
-    text: 'Get up and do the following: ' + currentMovement[0] + '. ' + currentMovement[1]
+    text: 'Get up and do the following: ' + currentMovement[0] + ' ' + currentMovement[2] + '. ' + currentMovement[3]
   });
   console.log(currentMovement + ' fitness message sent at ' + new Date());
 });
@@ -28,11 +28,11 @@ rule.second = 0;
 
 var oncePerHour = schedule.scheduleJob(rule, function(){
   var currentMovement = getMovement();
-  
+
   app.client.chat.postMessage({
     token: process.env.SLACK_BOT_TOKEN,
     channel: 'CLB865S81',
-    text: 'Get up and do the following: ' + currentMovement[0] + '. ' + currentMovement[1]
+    text: 'Get up and do the following: ' + currentMovement[0] + ' ' + currentMovement[2] + '. ' + currentMovement[3]
   });
   console.log('Fitness message sent at ' + new Date());
 });
