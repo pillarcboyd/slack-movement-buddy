@@ -17,7 +17,11 @@ app.listen(process.env.PORT, function() {
 })
 
 app.get('/', function(req, res) {
-  res.send('Ngrok is working! Path Hit: ' + req.url);
+  res.send('App is working! Path Hit: ' + req.url);
+})
+
+app.get('/test', function(req, res) {
+  res.send('Test env value requested: ' + process.env.TEST_MESSAGE);
 })
 
 app.get('/auth', function(req, res) {
